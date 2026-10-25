@@ -13,23 +13,28 @@
   --ease-io: cubic-bezier(.65, 0, .35, 1);
   --pad: max(24px, (100vw - 1240px) / 2);
 }
-html[data-theme="light"] {
+/* Cada sección define sus propios colores (claro u oscuro). Así, al cambiar de sección no se recalcula
+   toda la página: solo se desvanece una capa de fondo, que el navegador anima sin repintar nada más. */
+:root, [data-theme="light"] {
   --bg: var(--paper); --fg: var(--ink); --mut: #6b6862; --ln: rgba(13,13,15,.13);
   --card: rgba(255,255,255,.5); --card-2: #f7f5f1; --acc-tx: #3b3fff; --acc-soft: rgba(59,63,255,.1);
 }
-html[data-theme="dark"] {
+[data-theme="dark"] {
   --bg: #0d0d0f; --fg: #eeebe5; --mut: #8f8c86; --ln: rgba(238,235,229,.13);
   --card: rgba(255,255,255,.035); --card-2: #151518; --acc-tx: #8689ff; --acc-soft: rgba(134,137,255,.14);
 }
+[data-theme] { color: var(--fg); }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; background: var(--paper); }
 body {
-  margin: 0; background: var(--bg); color: var(--fg);
+  margin: 0; background: transparent; color: var(--fg);
   font-family: var(--font); font-size: 16px; line-height: 1.55;
   -webkit-font-smoothing: antialiased; overflow-x: hidden;
-  transition: background-color .9s var(--ease), color .9s var(--ease);
 }
+/* Capa de fondo oscuro: solo cambia su opacidad (animación ligera en la GPU). */
+.page-bg { position: fixed; inset: 0; z-index: -1; background: var(--ink); opacity: 0; transition: opacity .7s var(--ease); will-change: opacity; pointer-events: none; }
+.page-bg.is-dark { opacity: 1; }
 img, svg { display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -81,7 +86,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   position: absolute; top: 4px; bottom: 4px; left: 0;
   width: var(--pw, 0px); transform: translateX(var(--px, 4px));
   border-radius: 999px; background: var(--fg);
-  transition: transform .6s var(--ease), width .6s var(--ease), background .9s;
+  transition: transform .6s var(--ease), width .6s var(--ease);
 }
 .seg.is-dragging .seg-pill { transition: none; }
 .seg-btn {
@@ -152,7 +157,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .nav.is-hidden { transform: translateY(-100%); backdrop-filter: none; }
 .nav-inner { width: min(1360px, 100% - 40px); margin: 0 auto; height: 76px; display: flex; align-items: center; gap: 28px; }
 .mono { display: flex; align-items: center; gap: 12px; }
-.mono-mark { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--fg); color: var(--bg); font-family: var(--font-d); font-weight: 800; font-size: 17px; letter-spacing: -.06em; transition: background .9s, color .9s, transform .6s var(--ease); }
+.mono-mark { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--fg); color: var(--bg); font-family: var(--font-d); font-weight: 800; font-size: 17px; letter-spacing: -.06em; transition: transform .6s var(--ease); }
 .mono:hover .mono-mark { transform: rotate(-8deg); }
 .mono-txt b { display: block; font-size: 15px; line-height: 1.1; }
 .mono-txt small { color: var(--mut); font-size: 12px; }
@@ -331,7 +336,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   position: relative; flex: none; width: clamp(310px, 25vw, 370px); height: clamp(420px, 60vh, 540px);
   display: flex; flex-direction: column; padding: 14px 14px 22px;
   border-radius: 28px; background: var(--card-2); border: 1px solid var(--ln);
-  transition: transform .6s var(--ease), box-shadow .6s var(--ease), border-color .4s, background .9s;
+  transition: transform .6s var(--ease), box-shadow .6s var(--ease), border-color .4s;
 }
 .svc:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--fg) 22%, transparent); box-shadow: 0 34px 60px -38px rgba(13,13,15,.5); }
 
@@ -508,7 +513,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .projects .sec-head { margin-bottom: 56px; }
 .projects .sec-head .label { margin-bottom: 18px; }
 .proj-list { display: grid; gap: 22px; }
-.proj { display: grid; grid-template-columns: 1.2fr 1fr; border-radius: 30px; overflow: hidden; background: var(--card-2); border: 1px solid var(--ln); transition: border-color .4s, background .9s; }
+.proj { display: grid; grid-template-columns: 1.2fr 1fr; border-radius: 30px; overflow: hidden; background: var(--card-2); border: 1px solid var(--ln); transition: border-color .4s; }
 .proj:hover { border-color: var(--fg); }
 .proj-cover { position: relative; min-height: 400px; overflow: hidden; background: radial-gradient(120% 90% at 0% 100%, color-mix(in srgb, var(--c) 85%, #000), transparent 60%), radial-gradient(90% 80% at 100% 0%, color-mix(in srgb, var(--c) 55%, #fff), transparent 60%), color-mix(in srgb, var(--c) 70%, #111); }
 .proj-name { position: absolute; left: 32px; bottom: 26px; z-index: 2; font-family: var(--font-d); font-size: clamp(40px, 5vw, 72px); font-weight: 700; letter-spacing: -.05em; line-height: .9; color: #fff; }
@@ -532,7 +537,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 /* Ventajas (bento) -------------------------------------------------------- */
 .perks { padding: 100px 0 140px; }
 .bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.tile { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px; min-height: 230px; border-radius: 28px; background: var(--card-2); border: 1px solid var(--ln); transition: background .9s, border-color .4s; }
+.tile { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px; min-height: 230px; border-radius: 28px; background: var(--card-2); border: 1px solid var(--ln); transition: border-color .4s; }
 .tile h3 { font-family: var(--font-d); font-size: 27px; letter-spacing: -.035em; line-height: 1.05; font-weight: 600; }
 .tile p { color: var(--mut); font-size: 15px; }
 .tile-ic { width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center; background: var(--acc-soft); color: var(--acc-tx); margin-bottom: auto; }
@@ -652,7 +657,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .field input, .field select, .field textarea {
   width: 100%; padding: 25px 16px 10px; border-radius: 14px; border: 1px solid var(--ln);
   background: var(--bg); color: var(--fg); font: inherit; font-size: 15px; outline: none;
-  -webkit-appearance: none; appearance: none; transition: border-color .3s, box-shadow .3s, background .9s;
+  -webkit-appearance: none; appearance: none; transition: border-color .3s, box-shadow .3s;
 }
 .field textarea { resize: vertical; min-height: 120px; }
 .field select { cursor: pointer; }
