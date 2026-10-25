@@ -183,7 +183,7 @@
   let ultimoBarrido = 0;
   const barrer = () => {
     const ahora = Date.now();
-    if (ahora - ultimoBarrido < 120 || !pendientes.length) return;
+    if (ahora - ultimoBarrido < 250 || !pendientes.length) return;
     ultimoBarrido = ahora;
     pendientes = pendientes.filter(el => {
       if (el.classList.contains('is-in')) return false;
@@ -265,75 +265,133 @@
   const stepItems = $$('.step');
   $('.steps-line-fill')?.setAttribute('pathLength', '1');
 
-  // Collage del hero: parallax con mouse y scroll
-  const ccs = $$('.cc');
-  let mouseX = 0, mouseY = 0;
+  // Collage del hero: se mueve con el mouse (solo mientras está en el hero).
+  const ccs = $$('.cc').map(c => ({ el: c, d: +c.dataset.depth || 0.5 }));
+  let mouseX = 0, mouseY = 0, collageQueued = false;
   const moveCollage = () => {
-    const sy = scrollY;
-    ccs.forEach(c => {
-      const d = +c.dataset.depth || 0.5;
-      c.style.setProperty('--tx', (mouseX * d * 26).toFixed(1) + 'px');
-      c.style.setProperty('--ty', (mouseY * d * 18 - sy * d * 0.18).toFixed(1) + 'px');
+    collageQueued = false;
+    ccs.forEach(({ el, d }) => {
+      el.style.setProperty('--tx', (mouseX * d * 26).toFixed(1) + 'px');
+      el.style.setProperty('--ty', (mouseY * d * 18).toFixed(1) + 'px');
     });
   };
   if (finePointer && !reduce) {
     $('.hero')?.addEventListener('pointermove', e => {
       mouseX = (e.clientX / innerWidth - 0.5) * 2;
       mouseY = (e.clientY / innerHeight - 0.5) * 2;
-      requestAnimationFrame(moveCollage);
-    });
+      if (!collageQueued) { collageQueued = true; requestAnimationFrame(moveCollage); }
+    }, { passive: true });
   }
 
   const footerBig = $('[data-footer-big]');
-  let lastY = scrollY, ticking = false;
+
+  // Posiciones medidas una sola vez (y al cambiar el tamaño), no en cada cuadro del scroll:
+  // así el navegador no recalcula el diseño mientras se desplaza la página.
+  const geo = { max: 1, vh: innerHeight, scrubTop: 0, scrubH: 1, hsTop: 0, stepsTop: 0, stepsH: 1, stepTops: [], footTop: 0, footH: 1 };
+  const absTop = el => el.getBoundingClientRect().top + scrollY;
+  const measure = () => {
+    geo.vh = innerHeight;
+    geo.max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    if (scrub) { geo.scrubTop = absTop(scrub); geo.scrubH = scrub.offsetHeight; }
+    if (hs) geo.hsTop = absTop(hs);
+    if (steps) { geo.stepsTop = absTop(steps); geo.stepsH = steps.offsetHeight || 1; geo.stepTops = stepItems.map(absTop); }
+    if (footerBig) { geo.footTop = absTop(footerBig); geo.footH = footerBig.offsetHeight || 1; }
+  };
+
+  // Barra superior: visible al inicio; después del primer scroll se oculta y en computadora
+  // solo aparece al acercar el mouse a la parte de arriba (en celular, al subir un poco).
+  let navNear = false, lastY = scrollY;
+  const updateNav = y => {
+    nav.classList.toggle('is-scrolled', y > 20);
+    if (nav.classList.contains('is-open')) { nav.classList.remove('is-hidden'); return; }
+    let hide;
+    if (finePointer) hide = y > 40 && !navNear && !nav.matches(':focus-within');
+    else hide = y > 300 ? (y > lastY + 2 ? true : y < lastY - 2 ? false : nav.classList.contains('is-hidden')) : false;
+    nav.classList.toggle('is-hidden', hide);
+  };
+  if (finePointer) {
+    addEventListener('pointermove', e => {
+      const near = e.clientY < (navNear ? 110 : 70);
+      if (near !== navNear) { navNear = near; updateNav(scrollY); }
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { navNear = false; updateNav(scrollY); });
+    nav.addEventListener('focusin', () => updateNav(scrollY));
+  }
+
+  const last = { sp: -1, words: -1, lp: -1, lit: -1, fy: -1, hp: -1, idx: '' };
+  let ticking = false;
   function onScroll() {
     ticking = false;
-    const y = scrollY;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    progress.style.setProperty('--sp', max > 0 ? (y / max).toFixed(4) : 0);
+    const y = scrollY, vh = geo.vh;
 
-    nav.classList.toggle('is-scrolled', y > 20);
-    if (!nav.classList.contains('is-open')) {
-      if (y > lastY + 2 && y > 600) nav.classList.add('is-hidden');
-      else if (y < lastY - 2) nav.classList.remove('is-hidden');
-    }
+    const sp = Math.round(y / geo.max * 1000) / 1000;
+    if (sp !== last.sp) { last.sp = sp; progress.style.setProperty('--sp', sp); }
+
+    updateNav(y);
     lastY = y;
 
-    if (!reduce && y < innerHeight * 1.5) moveCollage();
-
+    // Texto de presentación: se ilumina palabra por palabra.
     if (words.length) {
-      const r = scrub.getBoundingClientRect();
-      const p = clamp((innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35), 0, 1);
-      const n = Math.round(p * words.length);
-      words.forEach((w, i) => w.classList.toggle('on', i < n));
+      const top = geo.scrubTop - y;
+      if (top < vh && top + geo.scrubH > 0 || last.words === -1) {
+        const p = clamp((vh * 0.85 - top) / (geo.scrubH + vh * 0.35), 0, 1);
+        const n = Math.round(p * words.length);
+        if (n !== last.words) {
+          const from = Math.min(n, Math.max(0, last.words)), to = Math.max(n, last.words);
+          for (let i = from; i < to; i++) words[i].classList.toggle('on', i < n);
+          last.words = n;
+        }
+      }
     }
 
+    // Servicios: carrusel horizontal
     if (hs && mqWide.matches && !reduce && hsDist) {
-      const r = hs.getBoundingClientRect();
-      const p = clamp(-r.top / hsDist, 0, 1);
-      hsTarget = -p * hsDist;
-      if (!hsRunning) { hsRunning = true; requestAnimationFrame(hsAnimate); }
-      hsBar?.style.setProperty('--hp', p.toFixed(4));
+      const p = clamp((y - geo.hsTop) / hsDist, 0, 1);
+      const target = -p * hsDist;
+      if (target !== hsTarget) {
+        hsTarget = target;
+        if (!hsRunning) { hsRunning = true; requestAnimationFrame(hsAnimate); }
+      }
+      const hp = Math.round(p * 1000) / 1000;
+      if (hp !== last.hp) { last.hp = hp; hsBar?.style.setProperty('--hp', hp); }
       const cards = track.children.length;
-      if (hsIndex) hsIndex.textContent = String(Math.min(cards - 1, Math.round(p * (cards - 1)) + 1)).padStart(2, '0');
+      const idx = String(Math.min(cards - 1, Math.round(p * (cards - 1)) + 1)).padStart(2, '0');
+      if (idx !== last.idx && hsIndex) { last.idx = idx; hsIndex.textContent = idx; }
     }
 
+    // Proceso: línea y pasos encendidos
     if (steps) {
-      const r = steps.getBoundingClientRect();
-      const p = clamp((innerHeight * 0.6 - r.top) / r.height, 0, 1);
-      steps.style.setProperty('--lp', p.toFixed(4));
-      stepItems.forEach(s => s.classList.toggle('is-lit', s.getBoundingClientRect().top < innerHeight * 0.6));
+      const top = geo.stepsTop - y;
+      if (top < vh * 1.2 && top + geo.stepsH > -vh * 0.2) {
+        const lp = Math.round(clamp((vh * 0.6 - top) / geo.stepsH, 0, 1) * 500) / 500;
+        if (lp !== last.lp) { last.lp = lp; steps.style.setProperty('--lp', lp); }
+        const lit = geo.stepTops.filter(t => t - y < vh * 0.6).length;
+        if (lit !== last.lit) { last.lit = lit; stepItems.forEach((s, i) => s.classList.toggle('is-lit', i < lit)); }
+      }
     }
 
+    // Letras grandes del pie de página
     if (footerBig) {
-      const r = footerBig.getBoundingClientRect();
-      const p = clamp((innerHeight - r.top) / r.height, 0, 1);
-      footerBig.style.setProperty('--fy', ((1 - p) * 60).toFixed(1) + '%');
+      const top = geo.footTop - y;
+      if (top < vh) {
+        const fy = Math.round((1 - clamp((vh - top) / geo.footH, 0, 1)) * 60);
+        if (fy !== last.fy) { last.fy = fy; footerBig.style.setProperty('--fy', fy + '%'); }
+      }
     }
   }
-  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-  addEventListener('resize', onScroll);
+  const requestTick = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } };
+  addEventListener('scroll', requestTick, { passive: true });
+  let resizeT = null;
+  const remeasure = () => { clearTimeout(resizeT); resizeT = setTimeout(() => { hsLayout(); measure(); requestTick(); }, 120); };
+  addEventListener('resize', remeasure);
+  addEventListener('load', remeasure);
+  document.fonts?.ready.then(remeasure);
+  new ResizeObserver(remeasure).observe(document.body);
+  measure();
   onScroll();
+
+  // Pausa las animaciones continuas de las secciones que no están en pantalla.
+  onVisible($$('section, footer'), (sec, visible) => sec.classList.toggle('is-offscreen', !visible), { rootMargin: '200px 0px' }, false);
 
   /* ------------------------------------------------------------------------
      Laboratorio: elegir demo y dispositivo
