@@ -313,7 +313,8 @@
 
   // Posiciones medidas una sola vez (y al cambiar el tamaño), no en cada cuadro del scroll:
   // así el navegador no recalcula el diseño mientras se desplaza la página.
-  const geo = { max: 1, vh: innerHeight, scrubTop: 0, scrubH: 1, hsTop: 0, stepsTop: 0, stepsH: 1, stepTops: [], footTop: 0, footH: 1 };
+  const labDock = $('[data-lab-dock]');
+  const geo = { max: 1, vh: innerHeight, scrubTop: 0, scrubH: 1, hsTop: 0, stepsTop: 0, stepsH: 1, stepTops: [], footTop: 0, footH: 1, dockTop: 0, dockH: 0 };
   const absTop = el => el.getBoundingClientRect().top + scrollY;
   const measure = () => {
     geo.vh = innerHeight;
@@ -322,6 +323,7 @@
     if (hs) geo.hsTop = absTop(hs);
     if (steps) { geo.stepsTop = absTop(steps); geo.stepsH = steps.offsetHeight || 1; geo.stepTops = stepItems.map(absTop); }
     if (footerBig) { geo.footTop = absTop(footerBig); geo.footH = footerBig.offsetHeight || 1; }
+    if (labDock) { geo.dockTop = absTop(labDock); geo.dockH = labDock.offsetHeight || 1; }
   };
 
   // Barra superior: visible al inicio; después del primer scroll se oculta y en computadora
@@ -333,11 +335,14 @@
     let hide;
     if (finePointer) hide = y > 40 && !navNear && !nav.matches(':focus-within');
     else hide = y > 300 ? (y > lastY + 2 ? true : y < lastY - 2 ? false : nav.classList.contains('is-hidden')) : false;
+    // Mientras el laboratorio ocupa la parte de arriba, la barra no se muestra para no tapar sus botones.
+    if (labDock && y > geo.dockTop - 100 && y < geo.dockTop + geo.dockH - 120) hide = true;
     nav.classList.toggle('is-hidden', hide);
   };
   if (finePointer) {
     addEventListener('pointermove', e => {
-      const near = e.clientY < (navNear ? 110 : 70);
+      // Aparece solo al tocar el borde superior; se queda mientras el mouse esté sobre la barra.
+      const near = e.clientY < (navNear ? 96 : 12);
       if (near !== navNear) { navNear = near; updateNav(scrollY); }
     }, { passive: true });
     document.documentElement.addEventListener('pointerleave', () => { navNear = false; updateNav(scrollY); });
