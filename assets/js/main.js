@@ -222,18 +222,13 @@
   setTimeout(barrer, 700);
 
   /* Cambio de tema claro/oscuro según la sección en pantalla */
-  // Solo cambian la capa de fondo y los elementos fijos (barra y cursor); cada sección ya tiene sus colores.
+  // Toda la página cambia de tema; el fondo se desvanece con la capa .page-bg.
   const metaTheme = $('meta[name="theme-color"]');
-  const pageBg = $('.page-bg');
-  const fijos = [$('#nav'), $('.cursor')].filter(Boolean);
-  let temaActual = 'light';
   onVisible($$('section[data-theme], footer[data-theme]'), (sec, visible) => {
     if (!visible) return;
     const t = sec.dataset.theme;
-    if (t === temaActual) return;
-    temaActual = t;
-    pageBg?.classList.toggle('is-dark', t === 'dark');
-    fijos.forEach(el => { el.dataset.theme = t; });
+    if (root.dataset.theme === t) return;
+    root.dataset.theme = t;
     metaTheme?.setAttribute('content', t === 'dark' ? '#0d0d0f' : '#eeebe5');
   }, { rootMargin: '-50% 0px -50% 0px' }, false);
 
