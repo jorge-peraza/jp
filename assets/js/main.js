@@ -12,6 +12,32 @@
   const hora = () => new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false });
   const CFG = window.JPCFG || {};
 
+  /* Desplazamiento suave con inercia (solo con mouse; en celular se usa el scroll nativo). */
+  let lenis = null;
+  if (window.Lenis && finePointer && !reduce) {
+    lenis = new window.Lenis({ lerp: 0.1, wheelMultiplier: 1 });
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+  /** Desplaza la página hasta un elemento (o una posición) de forma suave. */
+  const irA = (destino, offset = 0) => {
+    if (lenis) { lenis.scrollTo(destino, { offset, duration: 1.1 }); return; }
+    const top = typeof destino === 'number' ? destino : destino.getBoundingClientRect().top + scrollY + offset;
+    window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+  };
+  if (lenis) {
+    // Los enlaces internos (#seccion) también usan el desplazamiento suave.
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]');
+      const id = a?.getAttribute('href');
+      if (!id || id.length < 2) return;
+      const destino = id === '#laboratorio' ? ($('[data-lab-dock]') || $(id)) : $(id);
+      if (!destino) return;
+      e.preventDefault();
+      irA(destino);
+    });
+  }
+
   function onVisible(els, cb, opts = { rootMargin: '0px 0px -8% 0px', threshold: 0.12 }, once = true) {
     const io = new IntersectionObserver(entries => entries.forEach(en => {
       if (en.isIntersecting) { cb(en.target, true); if (once) io.unobserve(en.target); }
@@ -250,7 +276,7 @@
   // El carrusel sigue al scroll con inercia para que se mueva suave aunque la rueda avance a saltos.
   let hsCur = 0, hsTarget = 0, hsRunning = false;
   const hsAnimate = () => {
-    hsCur += (hsTarget - hsCur) * 0.12;
+    hsCur += (hsTarget - hsCur) * (lenis ? 0.28 : 0.12);
     if (Math.abs(hsTarget - hsCur) < 0.4) hsCur = hsTarget;
     track.style.setProperty('--hx', hsCur.toFixed(2) + 'px');
     if (hsCur !== hsTarget) requestAnimationFrame(hsAnimate);
@@ -398,7 +424,9 @@
      ------------------------------------------------------------------------ */
   const frame = $('#lab-frame');
   if (frame) {
+    const dock = $('[data-lab-dock]');
     const stage = $('.lab-stage');
+    const controls = $('.lab-controls');
     const screen = $('.lab-screen', frame);
     const caption = $('[data-lab-caption]');
     const urlEl = $('[data-lab-url]');
@@ -409,24 +437,27 @@
       movil:  { w: 330,  vw: 390,  ratio: 1.95, pad: 12, nombre: 'Móvil' },
     };
     const APPS = {
-      web:         ['Página web',              'Cambia de categoría en el menú del restaurante.'],
-      tienda:      ['Tienda en línea',         'Agrega productos y abre el carrito para pagar.'],
-      pos:         ['Punto de venta',          'Agrega productos, registra el cobro y calcula el cambio.'],
-      citas:       ['Agenda de citas',         'Selecciona servicio, día y hora, y confirma la cita.'],
+      web:         ['Página web',              'Cambia de categoría en el menú y reserva una mesa.'],
+      tienda:      ['Tienda en línea',         'Filtra productos, agrégalos al carrito y paga.'],
+      pos:         ['Punto de venta',          'Agrega productos, aplica un descuento y registra el cobro.'],
+      citas:       ['Agenda de citas',         'Elige servicio, barbero, día y hora, y confirma la cita.'],
       facturacion: ['Facturación electrónica', 'Selecciona un cliente, agrega conceptos y timbra la factura.'],
       procesos:    ['Procesos digitales',      'Avanza solicitudes y compara el antes y el después.'],
     };
     let device = 'pc', app = 'web', morphTimer = null;
 
+    // La pantalla usa la altura que queda libre en la ventana después de los controles y la leyenda,
+    // para que el bloque completo quepa sin cortarse.
     const layout = () => {
       const c = DEV[device];
       const barH = device === 'movil' ? 72 : 44;
-      const maxH = Math.max(420, innerHeight * 0.8);
+      const free = innerHeight - controls.offsetHeight - caption.offsetHeight - 14 - 12 - 28 - c.pad * 2;
+      const maxH = Math.max(360, free);
       const byHeight = (maxH - barH) / c.ratio + c.pad * 2;
       const fw = Math.round(Math.min(stage.clientWidth, c.w, device === 'pc' ? Infinity : byHeight));
       const bw = fw - c.pad * 2;
       let bh = Math.round(bw * c.ratio);
-      if (device === 'pc') bh = Math.min(bh, Math.round(maxH - barH));
+      bh = Math.min(bh, Math.round(maxH - barH));
       const s = bw / c.vw;
       frame.style.width = fw + 'px';
       screen.style.height = bh + 'px';
@@ -464,19 +495,45 @@
       describe();
     });
     onSeg('lab-app', showApp);
-
     $$('[data-demo]').forEach(a => a.addEventListener('click', () => seg('lab-app').segSelect(a.dataset.demo)));
+
+    // "Seguro" del laboratorio: si giras la rueda sobre la demo antes de que el bloque esté
+    // alineado con la ventana, primero se alinea la página y después se desplaza la demo.
+    let aligning = false;
+    screen.addEventListener('wheel', e => {
+      const top = dock.getBoundingClientRect().top;
+      if (Math.abs(top) <= 6) return;
+      e.preventDefault();
+      if (aligning) return;
+      aligning = true;
+      irA(dock);
+      setTimeout(() => { aligning = false; }, 450);
+    }, { passive: false });
+
+    // Con el scroll suave el "imán" de CSS no aplica: al detenerse cerca del laboratorio, la página se alinea con él.
+    if (lenis) {
+      let quieto = null;
+      lenis.on('scroll', () => {
+        clearTimeout(quieto);
+        quieto = setTimeout(() => {
+          const top = dock.getBoundingClientRect().top;
+          if (Math.abs(top) > 4 && Math.abs(top) < innerHeight * 0.22) irA(dock);
+        }, 160);
+      });
+    }
 
     new ResizeObserver(layout).observe(stage);
     addEventListener('resize', layout);
+    document.fonts?.ready.then(layout);
     layout();
     showApp('web');
   }
 
   const scrollerOf = el => el.closest('.scaled');
+  const escalaDe = el => { const s = scrollerOf(el); return s ? s.getBoundingClientRect().width / s.offsetWidth : 1; };
 
   /* ------------------------------------------------------------------------
-     Demo: página web (menú por categorías)
+     Demo: página web (menú por categorías y reservación)
      ------------------------------------------------------------------------ */
   $$('.app-web').forEach(w => {
     const tabs = $$('.w-tabs button', w);
@@ -484,43 +541,93 @@
       tabs.forEach(x => x.classList.toggle('is-on', x === t));
       $$('.w-item', w).forEach(it => it.classList.toggle('is-on', it.dataset.cat === t.dataset.cat));
     }));
+
+    const book = $('[data-w-book]', w);
+    const personas = $('[data-w-personas]', w);
+    let n = 2;
+    $$('[data-w-group]', w).forEach(g => g.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (b) $$('button', g).forEach(x => x.classList.toggle('is-on', x === b));
+    }));
+    $$('[data-w-step]', w).forEach(b => b.addEventListener('click', () => {
+      n = clamp(n + +b.dataset.wStep, 1, 12);
+      personas.textContent = n;
+    }));
+    $('[data-w-reservar]', w).addEventListener('click', () => {
+      const dia = $('[data-w-group="dia"] .is-on', w).textContent;
+      const hora = $('[data-w-group="hora"] .is-on', w).textContent;
+      $('[data-w-resumen]', w).textContent = `${dia} · ${hora} · ${n} ${n === 1 ? 'persona' : 'personas'}. Te enviamos la confirmación por WhatsApp.`;
+      book.classList.add('is-done');
+    });
+    $('[data-w-otra]', w).addEventListener('click', () => book.classList.remove('is-done'));
   });
 
   /* ------------------------------------------------------------------------
-     Demo: tienda en línea (carrito)
+     Demo: tienda en línea (filtros, carrito y envío gratis)
      ------------------------------------------------------------------------ */
   $$('.app-tienda').forEach(t => {
     const cart = new Map();
+    const ENVIO_GRATIS = 599, ENVIO = 99;
     const count = $('[data-cart-count]', t);
     const btnCart = $('.t-cart-btn', t);
     const lines = $('[data-cart-lines]', t);
-    const total = $('[data-cart-total]', t);
     const pay = $('[data-cart-pay]', t);
+    const ship = $('.t-ship', t);
+    let pedido = 10482;
+
+    $$('[data-t-filters] button', t).forEach(b => b.addEventListener('click', () => {
+      $$('[data-t-filters] button', t).forEach(x => x.classList.toggle('is-on', x === b));
+      $$('.t-card', t).forEach(c => c.classList.toggle('is-hidden', b.dataset.f !== 'todo' && c.dataset.cat !== b.dataset.f));
+    }));
 
     const render = () => {
-      let n = 0, sum = 0;
-      cart.forEach(it => { n += it.qty; sum += it.qty * it.price; });
+      let n = 0, sub = 0;
+      cart.forEach(it => { n += it.qty; sub += it.qty * it.price; });
+      const envio = n === 0 ? 0 : sub >= ENVIO_GRATIS ? 0 : ENVIO;
       count.textContent = n;
-      total.textContent = mxn(sum);
+      $('[data-cart-sub]', t).textContent = mxn(sub);
+      $('[data-cart-envio]', t).textContent = n === 0 ? '—' : envio ? mxn(envio) : 'Gratis';
+      $('[data-cart-total]', t).textContent = mxn(sub + envio);
       pay.disabled = n === 0;
+      const falta = Math.max(0, ENVIO_GRATIS - sub);
+      ship.classList.toggle('is-free', n > 0 && falta === 0);
+      $('[data-ship-txt]', t).textContent = falta === 0 && n > 0 ? '¡Tu pedido tiene envío gratis!' : `Agrega ${mxn(falta, 0)} para obtener envío gratis`;
+      $('[data-ship-bar]', t).style.setProperty('--p', Math.min(100, sub / ENVIO_GRATIS * 100) + '%');
       if (!n) { lines.innerHTML = '<p class="t-empty">Tu carrito está vacío.</p>'; return; }
       lines.innerHTML = [...cart.values()].map(it => `
         <div class="t-line" data-id="${it.id}">
-          <span class="t-line-thumb" style="--h:${it.hue}"></span>
+          <span class="t-line-thumb" style="--bag:${it.color}"></span>
           <div><b>${it.name}</b><small>${mxn(it.price, 0)} c/u</small></div>
           <div class="t-qty"><button type="button" data-q="-1" aria-label="Quitar uno">−</button><span>${it.qty}</span><button type="button" data-q="1" aria-label="Agregar uno">+</button></div>
         </div>`).join('');
     };
-    const open = () => { scrollerOf(t)?.scrollTo({ top: 0, behavior: 'smooth' }); t.classList.add('is-cart-open'); };
-    const close = () => t.classList.remove('is-cart-open');
+
+    // Punto que "vuela" del botón al carrito.
+    const fly = from => {
+      if (reduce || !from.animate) return;
+      const base = t.getBoundingClientRect(), s = escalaDe(t) || 1;
+      const a = from.getBoundingClientRect(), b = btnCart.getBoundingClientRect();
+      const x1 = (a.left + a.width / 2 - base.left) / s, y1 = (a.top + a.height / 2 - base.top) / s;
+      const x2 = (b.left + b.width / 2 - base.left) / s, y2 = (b.top + b.height / 2 - base.top) / s;
+      const dot = document.createElement('span');
+      dot.className = 't-fly';
+      dot.style.left = x1 + 'px';
+      dot.style.top = y1 + 'px';
+      t.appendChild(dot);
+      dot.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${(x2 - x1) * 0.5}px, ${(y2 - y1) * 0.5 - 60}px) scale(1.2)`, opacity: 1, offset: 0.5 },
+        { transform: `translate(${x2 - x1}px, ${y2 - y1}px) scale(.4)`, opacity: 0.2 },
+      ], { duration: 700, easing: 'cubic-bezier(.5, 0, .3, 1)' }).onfinish = () => { dot.remove(); replay(btnCart, 'is-bump'); };
+    };
 
     $$('[data-add]', t).forEach(b => b.addEventListener('click', () => {
       const id = b.dataset.add;
-      const it = cart.get(id) || { id, name: b.dataset.name, price: +b.dataset.price, hue: b.dataset.hue, qty: 0 };
+      const it = cart.get(id) || { id, name: b.dataset.name, price: +b.dataset.price, color: b.dataset.color, qty: 0 };
       it.qty++;
       cart.set(id, it);
       render();
-      replay(btnCart, 'is-bump');
+      fly(b);
       b.classList.add('is-added');
       $('i', b).textContent = 'Agregado';
       clearTimeout(b._t);
@@ -535,14 +642,18 @@
       if (it.qty <= 0) cart.delete(id);
       render();
     });
-    $$('[data-cart-open]', t).forEach(b => b.addEventListener('click', open));
-    $$('[data-cart-close]', t).forEach(b => b.addEventListener('click', close));
-    pay.addEventListener('click', () => t.classList.add('is-paid'));
+    $$('[data-cart-open]', t).forEach(b => b.addEventListener('click', () => { scrollerOf(t)?.scrollTo({ top: 0, behavior: 'smooth' }); t.classList.add('is-cart-open'); }));
+    $$('[data-cart-close]', t).forEach(b => b.addEventListener('click', () => t.classList.remove('is-cart-open')));
+    pay.addEventListener('click', () => {
+      $('[data-cart-order]', t).textContent = '#TS-' + pedido++;
+      t.classList.add('is-paid');
+    });
     $('[data-cart-reset]', t).addEventListener('click', () => {
       cart.clear();
       render();
       t.classList.remove('is-paid', 'is-cart-open');
     });
+    render();
   });
 
   /* ------------------------------------------------------------------------
@@ -550,25 +661,38 @@
      ------------------------------------------------------------------------ */
   $$('.app-pos').forEach(p => {
     const order = new Map();
-    let folio = 483, method = 'efectivo', received = null;
+    let folio = 483, method = 'efectivo', received = null, descuento = false;
+    const kpi = { ventas: 3480, tickets: 42, caja: 1950 };
     const lines = $('[data-pos-lines]', p);
     const charge = $('[data-pos-charge]', p);
     const modal = $('[data-pos-modal]', p);
     const cashBox = $('[data-pos-cash]', p);
+    const cardWait = $('[data-pos-card]', p);
     const changeEl = $('[data-pos-change]', p);
-    const totalOf = () => [...order.values()].reduce((s, it) => s + it.qty * it.price, 0);
+    const discountBtn = $('[data-pos-discount]', p);
     const emptyHtml = lines.innerHTML;
     const clock = $('[data-pos-clock]', p);
     clock.textContent = hora();
     setInterval(() => { clock.textContent = hora(); }, 30000);
 
+    const bruto = () => [...order.values()].reduce((s, it) => s + it.qty * it.price, 0);
+    const totalOf = () => bruto() * (descuento ? 0.9 : 1);
+
     const render = () => {
-      const total = totalOf();
-      $('[data-pos-sub]', p).textContent = mxn(total / 1.16);
+      const b = bruto(), total = totalOf();
+      $('[data-pos-sub]', p).textContent = mxn(b);
+      $('[data-pos-desc]', p).textContent = '−' + mxn(b - total);
+      $('.p-sum-desc', p).style.display = descuento ? '' : 'none';
       $('[data-pos-iva]', p).textContent = mxn(total - total / 1.16);
       $('[data-pos-total]', p).textContent = mxn(total);
       $('[data-pos-charge-amt]', p).textContent = mxn(total);
       charge.disabled = total === 0;
+      $$('.p-tile', p).forEach(tile => {
+        const q = order.get(tile.dataset.name)?.qty || 0;
+        const badge = $('[data-qty]', tile);
+        badge.textContent = q;
+        badge.classList.toggle('is-on', q > 0);
+      });
       lines.innerHTML = order.size ? [...order.values()].map(it => `
         <div class="p-line" data-name="${it.name}">
           <b>${it.name}</b>
@@ -578,15 +702,20 @@
     };
     const updateChange = () => {
       const total = totalOf();
-      const rec = received ?? total;
-      const diff = rec - total;
+      const diff = (received ?? total) - total;
       changeEl.textContent = diff >= 0 ? mxn(diff) : 'Faltan ' + mxn(-diff);
+    };
+    const filtrar = () => {
+      const cat = $('[data-pos-cat].is-on', p).dataset.posCat;
+      const q = $('[data-pos-search]', p).value.trim().toLowerCase();
+      $$('.p-tile', p).forEach(t => t.classList.toggle('is-hidden', (cat !== 'todo' && t.dataset.cat !== cat) || (q && !t.dataset.name.toLowerCase().includes(q))));
     };
 
     $$('[data-pos-cat]', p).forEach(b => b.addEventListener('click', () => {
       $$('[data-pos-cat]', p).forEach(x => x.classList.toggle('is-on', x === b));
-      $$('.p-tile', p).forEach(t => t.classList.toggle('is-hidden', b.dataset.posCat !== 'todo' && t.dataset.cat !== b.dataset.posCat));
+      filtrar();
     }));
+    $('[data-pos-search]', p).addEventListener('input', filtrar);
     $$('.p-tile', p).forEach(tile => tile.addEventListener('click', () => {
       const name = tile.dataset.name;
       const it = order.get(name) || { name, price: +tile.dataset.price, qty: 0 };
@@ -602,10 +731,23 @@
       if (it.qty <= 0) order.delete(it.name);
       render();
     });
+    discountBtn.addEventListener('click', () => {
+      descuento = !descuento;
+      discountBtn.classList.toggle('is-on', descuento);
+      discountBtn.lastChild.textContent = descuento ? 'Descuento 10% aplicado' : 'Aplicar descuento 10%';
+      render();
+    });
     $('[data-pos-clear]', p).addEventListener('click', () => { order.clear(); render(); });
 
+    const setMethod = m => {
+      method = m;
+      $$('[data-pos-method]', p).forEach(x => x.classList.toggle('is-on', x.dataset.posMethod === m));
+      cashBox.classList.toggle('is-hidden', m !== 'efectivo');
+      cardWait.classList.toggle('is-on', m === 'tarjeta');
+    };
     charge.addEventListener('click', () => {
       received = null;
+      setMethod('efectivo');
       $$('[data-cash]', p).forEach(b => b.classList.toggle('is-on', b.dataset.cash === 'exacto'));
       $('[data-pos-modal-total]', p).textContent = mxn(totalOf());
       updateChange();
@@ -613,11 +755,7 @@
       scrollerOf(p)?.scrollTo({ top: 0, behavior: 'smooth' });
       modal.classList.add('is-open');
     });
-    $$('[data-pos-method]', p).forEach(b => b.addEventListener('click', () => {
-      method = b.dataset.posMethod;
-      $$('[data-pos-method]', p).forEach(x => x.classList.toggle('is-on', x === b));
-      cashBox.classList.toggle('is-hidden', method !== 'efectivo');
-    }));
+    $$('[data-pos-method]', p).forEach(b => b.addEventListener('click', () => setMethod(b.dataset.posMethod)));
     $$('[data-cash]', p).forEach(b => b.addEventListener('click', () => {
       received = b.dataset.cash === 'exacto' ? null : +b.dataset.cash;
       $$('[data-cash]', p).forEach(x => x.classList.toggle('is-on', x === b));
@@ -625,46 +763,70 @@
     }));
     $('[data-pos-cancel]', p).addEventListener('click', () => modal.classList.remove('is-open'));
     $('[data-pos-confirm]', p).addEventListener('click', () => {
-      if (method === 'efectivo' && received !== null && received < totalOf()) { replay(changeEl, 'is-pop'); return; }
-      $('[data-pos-ok-folio]', p).textContent = '#' + String(folio).padStart(4, '0');
-      $('[data-pos-ok-total]', p).textContent = mxn(totalOf());
+      const total = totalOf();
+      if (method === 'efectivo' && received !== null && received < total) { replay(changeEl, 'is-pop'); return; }
+      const f = '#' + String(folio).padStart(4, '0');
+      $('[data-pos-ok-folio]', p).textContent = f;
+      $('[data-pos-ok-total]', p).textContent = mxn(total);
+      $('[data-pos-receipt]', p).innerHTML = [...order.values()].map(it => `<div><span>${it.qty} × ${it.name}</span><span>${mxn(it.qty * it.price)}</span></div>`).join('')
+        + (descuento ? `<div><span>Descuento 10%</span><span>−${mxn(bruto() - total)}</span></div>` : '')
+        + `<div class="is-total"><span>Total · ${method === 'efectivo' ? 'Efectivo' : 'Tarjeta'}</span><span>${mxn(total)}</span></div>`;
+      // Actualiza los indicadores del día.
+      kpi.ventas += total;
+      kpi.tickets += 1;
+      if (method === 'efectivo') kpi.caja += total;
+      const pon = (sel, val) => { const el = $(sel, p); el.textContent = val; replay(el, 'is-pop'); };
+      pon('[data-pos-kpi-ventas]', mxn(kpi.ventas));
+      pon('[data-pos-kpi-tickets]', kpi.tickets);
+      pon('[data-pos-kpi-prom]', mxn(kpi.ventas / kpi.tickets));
+      if (method === 'efectivo') pon('[data-pos-kpi-caja]', mxn(kpi.caja));
       modal.dataset.paso = 'ok';
     });
     $('[data-pos-new]', p).addEventListener('click', () => {
       modal.classList.remove('is-open');
       order.clear();
+      descuento = false;
+      discountBtn.classList.remove('is-on');
+      discountBtn.lastChild.textContent = 'Aplicar descuento 10%';
       folio++;
       $('[data-pos-folio]', p).textContent = '#' + String(folio).padStart(4, '0');
       render();
     });
+    render();
   });
 
   /* ------------------------------------------------------------------------
      Demo: agenda de citas
      ------------------------------------------------------------------------ */
   $$('.app-citas').forEach(c => {
-    const st = { svc: null, day: null, slot: null };
+    const st = { svc: null, barber: null, day: null, slot: null };
     const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
     const confirm = $('[data-c-confirm]', c);
+    const av = $('[data-c-av]', c);
     const pick = (sel, btn) => $$(sel, c).forEach(b => b.classList.toggle('is-on', b === btn));
     const update = () => {
-      $('[data-c-svc]', c).textContent = st.svc ? st.svc.name : '—';
+      $('[data-c-svc]', c).textContent = st.svc ? st.svc.name : 'Tu cita';
+      $('[data-c-barber]', c).textContent = st.barber ? 'Con ' + st.barber.name : 'Elige servicio y barbero';
+      av.textContent = st.barber ? st.barber.name[0] : '?';
+      av.style.setProperty('--c', st.barber ? st.barber.color : '#3a3b40');
       $('[data-c-date]', c).textContent = st.day ? `${dias[(st.day - 1) % 7]} ${st.day} nov${st.slot ? ' · ' + st.slot : ''}` : '—';
       $('[data-c-total]', c).textContent = st.svc ? mxn(st.svc.price, 0) : '—';
-      const n = [st.svc, st.day, st.slot].filter(Boolean).length;
-      $$('.c-steps i', c).forEach((i, k) => i.classList.toggle('is-on', k < Math.max(1, n)));
-      confirm.disabled = n < 3;
+      const pasos = [st.svc, st.barber, st.day, st.slot];
+      const n = pasos.filter(Boolean).length;
+      $$('.c-steps li', c).forEach((li, k) => li.classList.toggle('is-on', k <= n && k < 4 && (k === 0 || pasos[k - 1])));
+      confirm.disabled = n < 4;
     };
     $$('.c-svc', c).forEach(b => b.addEventListener('click', () => { st.svc = { name: b.dataset.name, price: +b.dataset.price }; pick('.c-svc', b); update(); }));
+    $$('.c-barber', c).forEach(b => b.addEventListener('click', () => { st.barber = { name: b.dataset.name, color: b.dataset.color }; pick('.c-barber', b); update(); }));
     $$('.c-day', c).forEach(b => b.addEventListener('click', () => { st.day = +b.dataset.day; pick('.c-day', b); update(); }));
     $$('.c-slot', c).forEach(b => b.addEventListener('click', () => { st.slot = b.dataset.slot; pick('.c-slot', b); update(); }));
     confirm.addEventListener('click', () => {
-      $('[data-c-done-text]', c).textContent = `${st.svc.name} · ${dias[(st.day - 1) % 7]} ${st.day} de noviembre a las ${st.slot}.`;
+      $('[data-c-done-text]', c).textContent = `${st.svc.name} con ${st.barber.name} · ${dias[(st.day - 1) % 7]} ${st.day} de noviembre a las ${st.slot}.`;
       scrollerOf(c)?.scrollTo({ top: 0, behavior: 'smooth' });
       c.classList.add('is-done');
     });
     $('[data-c-reset]', c).addEventListener('click', () => {
-      st.svc = st.day = st.slot = null;
+      st.svc = st.barber = st.day = st.slot = null;
       $$('.is-on', $('.c-body', c)).forEach(b => b.classList.remove('is-on'));
       c.classList.remove('is-done');
       update();
@@ -684,6 +846,7 @@
     const extras = [['Soporte mensual', 1500], ['Correo corporativo (5 cuentas)', 900]];
     const hex = n => [...crypto.getRandomValues(new Uint8Array(n))].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
     const b64 = n => btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(n))));
+    let folio = 127;
 
     const backToDraft = () => {
       if (paper.dataset.estado === 'borrador') return;
@@ -694,6 +857,7 @@
       stampBtn.disabled = false;
       addBtn.disabled = extras.length === 0;
     };
+    const total = () => conceptos.reduce((s, [, m]) => s + m, 0) * 1.16;
     const renderTotals = () => {
       const sub = conceptos.reduce((s, [, m]) => s + m, 0);
       $('[data-f-sub]', f).textContent = mxn(sub);
@@ -752,6 +916,12 @@
         drawQR();
         paper.dataset.estado = 'timbrada';
         status.textContent = 'Timbrada · ' + hora();
+        // La factura nueva aparece en la lista de recientes.
+        const lista = $('[data-f-recent]', f);
+        lista.querySelector('.is-new')?.classList.remove('is-new');
+        lista.insertAdjacentHTML('afterbegin', `<li class="is-new"><span><b>A-0${folio}</b><small>${$('[data-f-r-name]', f).textContent}</small></span><span><b>${mxn(total(), 0)}</b><em class="is-ok">Timbrada</em></span></li>`);
+        $$('li', lista).slice(5).forEach(li => li.remove());
+        folio++;
       }, 1600);
     });
     renderTotals();
@@ -764,7 +934,14 @@
     const orden = ['solicitud', 'revision', 'aprobada', 'pagada'];
     const accion = { revision: ['Ana', 'envió a revisión'], aprobada: ['Marco', 'aprobó'], pagada: ['Sofía', 'registró el pago de'] };
     const log = $('[data-k-log]', k);
-    const counts = () => $$('.k-col', k).forEach(col => { $('[data-count]', col).textContent = $$('.k-card', col).length; });
+    let pagadasMes = 12;
+    const kpi = (name, val) => { const el = $(`[data-k-kpi="${name}"]`, k); if (el.textContent !== String(val)) { el.textContent = val; replay(el, 'is-pop'); } };
+    const counts = () => {
+      $$('.k-col', k).forEach(col => { $('[data-count]', col).textContent = $$('.k-card', col).length; });
+      kpi('abiertas', $$('.k-col[data-col="solicitud"] .k-card, .k-col[data-col="revision"] .k-card', k).length);
+      kpi('revision', $$('.k-col[data-col="revision"] .k-card', k).length);
+      kpi('pagadas', pagadasMes);
+    };
 
     $$('[data-modo-btn]', k).forEach(b => b.addEventListener('click', () => {
       k.dataset.modo = b.dataset.modoBtn;
@@ -778,9 +955,11 @@
       const to = orden[orden.indexOf(from) + 1];
       if (!to) return;
       $(`.k-col[data-col="${to}"] .k-cards`, k).prepend(card);
+      card.dataset.paso = orden.indexOf(to) + 1;
       card.style.animation = 'none';
       void card.offsetWidth;
       card.style.animation = '';
+      if (to === 'pagada') pagadasMes++;
       counts();
       const [quien, que] = accion[to];
       log.insertAdjacentHTML('afterbegin', `<li class="is-new"><span>${hora()}</span>${quien} ${que} la solicitud ${$('small', card).textContent}</li>`);
@@ -888,7 +1067,7 @@
       if (st.presupuesto) form.presupuesto.value = st.presupuesto.value;
       form.monto.value = st.montoMax ? tope + 1 : (st.monto || '');
       form.mensaje.value = mensaje().split('\n').slice(2).join('\n');
-      $('#contacto').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      irA($('#contacto'));
       setTimeout(() => form.nombre.focus({ preventScroll: true }), 900);
     });
     // Si cambian el rango a mano en el formulario, el monto exacto del slider ya no aplica.

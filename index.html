@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=1792968076">
+  <link rel="stylesheet" href="assets/css/main.css?v=1792969560">
   <script>
     document.documentElement.classList.add('js');
     try { if (sessionStorage.getItem('jp-intro')) document.documentElement.classList.add('no-intro'); } catch (e) {}
@@ -322,6 +322,8 @@
       <p data-reveal>Estas demostraciones funcionan como un sistema real: agrega productos al carrito, registra un cobro, agenda una cita o timbra una factura. También puedes visualizarlas en computadora, tablet o celular.</p>
     </div>
 
+    <!-- Controles + pantalla: se ajustan a la altura visible y la página se alinea con ellos. -->
+    <div class="lab-dock" data-lab-dock>
     <div class="lab-controls" data-reveal>
       <div class="seg seg-scroll" data-seg="lab-app" role="tablist" aria-label="Demo">
         <span class="seg-pill" aria-hidden="true"></span>
@@ -350,7 +352,7 @@
             <span class="browser-bar-end"><span class="live-dot"></span>Demostración</span>
           </div>
           <div class="browser-body lab-screen" data-vw="1240" data-fixed>
-                          <div class="lab-app scaled" data-show="web" data-url="casaolivo.mx"><div class="app-wrap"><div class="app app-web" data-app="web">
+                          <div class="lab-app scaled" data-lenis-prevent data-show="web" data-url="casaolivo.mx"><div class="app-wrap"><div class="app app-web" data-app="web">
   <header class="w-nav">
     <b class="w-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg>Casa Olivo</b>
     <nav><span>Menú</span><span>Nosotros</span><span>Eventos</span><span>Ubicación</span></nav>
@@ -359,17 +361,31 @@
   </header>
 
   <section class="w-hero">
+    <div class="w-hero-bg" aria-hidden="true"><span class="dish w-hero-dish" style="--a:#d0603a;--b:#e9b44c;--c:#7c8c48"></span><span class="w-glow"></span></div>
     <div class="w-hero-txt">
       <small>Cocina mediterránea · Monterrey</small>
       <h3>Sabores que se disfrutan en compañía.</h3>
       <p>Ingredientes frescos, recetas de temporada y una terraza para quedarse toda la tarde.</p>
-      <div class="w-actions"><span class="w-btn">Reservar mesa</span><span class="w-btn is-ghost">Ver menú</span></div>
+      <div class="w-rating"><span>★★★★★</span><b>4.9</b> · 1,240 reseñas</div>
     </div>
-    <div class="w-hero-art" aria-hidden="true">
-      <span class="w-plate"><span class="w-plate-in"></span></span>
-      <span class="w-leaf l1"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg></span>
-      <span class="w-leaf l2"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg></span>
-      <span class="w-badge"><b>4.9</b><small>★★★★★</small></span>
+
+    <div class="w-book" data-w-book>
+      <div class="w-book-form">
+        <b>Reserva tu mesa</b>
+        <span class="w-label">Día</span>
+        <div class="w-chips" data-w-group="dia"><button type="button" class="is-on">Hoy</button><button type="button">Mañana</button><button type="button">Sáb 28</button></div>
+        <span class="w-label">Hora</span>
+        <div class="w-chips" data-w-group="hora"><button type="button">19:00</button><button type="button" class="is-on">20:00</button><button type="button">21:00</button></div>
+        <span class="w-label">Personas</span>
+        <div class="w-stepper"><button type="button" data-w-step="-1" aria-label="Menos">−</button><b data-w-personas>2</b><button type="button" data-w-step="1" aria-label="Más">+</button></div>
+        <button type="button" class="w-btn w-book-btn" data-w-reservar>Confirmar reservación</button>
+      </div>
+      <div class="w-book-ok">
+        <span class="w-ok-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+        <b>¡Mesa reservada!</b>
+        <p data-w-resumen></p>
+        <button type="button" data-w-otra>Hacer otra reservación</button>
+      </div>
     </div>
   </section>
 
@@ -384,42 +400,49 @@
     </div>
     <div class="w-items">
               <article class="w-item is-on" data-cat="entradas" style="--i:0">
-          <div><b>Hummus de la casa</b><p>Garbanzo, tahini, aceite de oliva y pan pita recién horneado</p></div>
-          <span>$145</span>
+          <span class="dish " style="--a:#e2b866;--b:#b5763b;--c:#7c8c48"></span>          <div><b>Hummus de la casa</b><p>Garbanzo, tahini, aceite de oliva y pan pita recién horneado</p><span>$145</span></div>
         </article>
               <article class="w-item is-on" data-cat="entradas" style="--i:1">
-          <div><b>Burrata</b><p>Tomate cherry rostizado, pesto de albahaca y pan de masa madre</p></div>
-          <span>$210</span>
+          <span class="dish " style="--a:#f3efe3;--b:#d0503a;--c:#5f8a3a"></span>          <div><b>Burrata</b><p>Tomate cherry rostizado, pesto de albahaca y pan de masa madre</p><span>$210</span></div>
         </article>
               <article class="w-item is-on" data-cat="entradas" style="--i:2">
-          <div><b>Calamares</b><p>Crujientes, con alioli de limón amarillo</p></div>
-          <span>$185</span>
+          <span class="dish " style="--a:#e8c27a;--b:#f1e2b8;--c:#d9a441"></span>          <div><b>Calamares</b><p>Crujientes, con alioli de limón amarillo</p><span>$185</span></div>
         </article>
               <article class="w-item" data-cat="fuertes" style="--i:0">
-          <div><b>Risotto de hongos</b><p>Arroz arborio, hongos silvestres y parmesano</p></div>
-          <span>$265</span>
+          <span class="dish " style="--a:#e9dcc0;--b:#8a6a45;--c:#c8b38a"></span>          <div><b>Risotto de hongos</b><p>Arroz arborio, hongos silvestres y parmesano</p><span>$265</span></div>
         </article>
               <article class="w-item" data-cat="fuertes" style="--i:1">
-          <div><b>Salmón al horno</b><p>Costra de hierbas, puré de coliflor y espárragos</p></div>
-          <span>$340</span>
+          <span class="dish " style="--a:#f08a5d;--b:#f1ead8;--c:#6f8f3e"></span>          <div><b>Salmón al horno</b><p>Costra de hierbas, puré de coliflor y espárragos</p><span>$340</span></div>
         </article>
               <article class="w-item" data-cat="fuertes" style="--i:2">
-          <div><b>Pasta al pomodoro</b><p>Pasta fresca, salsa de tomate San Marzano y albahaca</p></div>
-          <span>$225</span>
+          <span class="dish " style="--a:#d9452f;--b:#f2c46d;--c:#4f7d32"></span>          <div><b>Pasta al pomodoro</b><p>Pasta fresca, salsa de tomate San Marzano y albahaca</p><span>$225</span></div>
         </article>
               <article class="w-item" data-cat="postres" style="--i:0">
-          <div><b>Tiramisú</b><p>Receta tradicional con café de especialidad</p></div>
-          <span>$135</span>
+          <span class="dish " style="--a:#6b4426;--b:#e9dcc0;--c:#a8744a"></span>          <div><b>Tiramisú</b><p>Receta tradicional con café de especialidad</p><span>$135</span></div>
         </article>
               <article class="w-item" data-cat="postres" style="--i:1">
-          <div><b>Panna cotta</b><p>Vainilla y coulis de frutos rojos</p></div>
-          <span>$120</span>
+          <span class="dish " style="--a:#f6efe1;--b:#b3263b;--c:#e86a7a"></span>          <div><b>Panna cotta</b><p>Vainilla y coulis de frutos rojos</p><span>$120</span></div>
         </article>
               <article class="w-item" data-cat="postres" style="--i:2">
-          <div><b>Baklava</b><p>Hojaldre, nuez y miel de azahar</p></div>
-          <span>$115</span>
+          <span class="dish " style="--a:#d9a441;--b:#8a5a2b;--c:#e9c46d"></span>          <div><b>Baklava</b><p>Hojaldre, nuez y miel de azahar</p><span>$115</span></div>
         </article>
           </div>
+  </section>
+
+  <section class="w-gallery">
+          <figure style="--c1:#c98b4b;--c2:#6e7d3c"><span></span><figcaption>Terraza</figcaption></figure>
+          <figure style="--c1:#7a2e35;--c2:#c9a06a"><span></span><figcaption>Cava de vinos</figcaption></figure>
+          <figure style="--c1:#d9893b;--c2:#3d3a2f"><span></span><figcaption>Cocina abierta</figcaption></figure>
+          <figure style="--c1:#5d6b38;--c2:#e9d7b0"><span></span><figcaption>Eventos privados</figcaption></figure>
+      </section>
+
+  <section class="w-reviews">
+    <h4>Lo que dicen nuestros comensales</h4>
+    <div class="w-reviews-row">
+      <blockquote><span>★★★★★</span>“El risotto es increíble y la terraza al atardecer, inmejorable.”<cite>Mariana L.</cite></blockquote>
+      <blockquote><span>★★★★★</span>“Reservamos en línea en un minuto y nos tenían la mesa lista.”<cite>Jorge R.</cite></blockquote>
+      <blockquote><span>★★★★★</span>“Ideal para cenas de trabajo. Servicio atento y rápido.”<cite>Ana P.</cite></blockquote>
+    </div>
   </section>
 
   <section class="w-info">
@@ -430,157 +453,265 @@
   <footer class="w-foot">© Casa Olivo · Hecho por JP</footer>
 </div>
     </div></div>
-                          <div class="lab-app scaled" data-show="tienda" data-url="tostado.mx"><div class="app-wrap"><div class="app app-tienda" data-app="tienda">
-  <div class="t-promo">Envío gratis en pedidos desde $599</div>
+                          <div class="lab-app scaled" data-lenis-prevent data-show="tienda" data-url="tostado.mx"><div class="app-wrap"><div class="app app-tienda" data-app="tienda">
+  <div class="t-promo">Envío gratis en pedidos desde $599 · Tostado fresco cada semana</div>
   <header class="t-nav">
     <b class="t-logo">tostado<span>.</span></b>
     <nav><span>Café</span><span>Métodos</span><span>Accesorios</span><span>Suscripción</span></nav>
-    <span class="t-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Buscar</span>
-    <button type="button" class="t-cart-btn" data-cart-open><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 11h10.8l2-7.5H6.4"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg><b data-cart-count>0</b></button>
+    <span class="t-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Buscar productos</span>
+    <span class="t-user"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></span>
+    <button type="button" class="t-cart-btn" data-cart-open aria-label="Abrir carrito"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 11h10.8l2-7.5H6.4"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg><b data-cart-count>0</b></button>
   </header>
 
   <section class="t-hero">
-    <div>
+    <div class="t-hero-txt">
       <small>Cosecha 2026</small>
       <h3>Café mexicano, tostado cada semana.</h3>
-      <p>De pequeños productores de Chiapas, Veracruz y Oaxaca a tu taza.</p>
+      <p>De pequeños productores de Chiapas, Veracruz y Oaxaca directo a tu taza.</p>
+      <span class="t-hero-btn">Comprar ahora <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </div>
-    <span class="t-hero-bean" aria-hidden="true"></span>
+    <div class="t-hero-art" aria-hidden="true">
+      <span class="t-bag is-xl" style="--bag:#7a4a2a"><i>tostado.</i><em>Chiapas</em></span>
+      <span class="t-bag is-md" style="--bag:#2f5d50"><i>tostado.</i><em>Veracruz</em></span>
+      <span class="t-bean b1"></span><span class="t-bean b2"></span><span class="t-bean b3"></span>
+    </div>
   </section>
 
-  <section class="t-grid">
-          <article class="t-card" style="--h:25">
-        <div class="t-img"><em>Más vendido</em><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></div>
-        <b>Café Chiapas 500 g</b>
-        <div class="t-row">
-          <span>$289</span>
-          <button type="button" data-add="chiapas" data-name="Café Chiapas 500 g" data-price="289" data-hue="25"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-          <article class="t-card" style="--h:18">
-        <div class="t-img"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></div>
-        <b>Café Veracruz 500 g</b>
-        <div class="t-row">
-          <span>$269</span>
-          <button type="button" data-add="veracruz" data-name="Café Veracruz 500 g" data-price="269" data-hue="18"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-          <article class="t-card" style="--h:35">
-        <div class="t-img"><em>Nuevo</em><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></div>
-        <b>Café Oaxaca 250 g</b>
-        <div class="t-row">
-          <span>$189</span>
-          <button type="button" data-add="oaxaca" data-name="Café Oaxaca 250 g" data-price="189" data-hue="35"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-          <article class="t-card" style="--h:200">
-        <div class="t-img"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></div>
-        <b>Prensa francesa</b>
-        <div class="t-row">
-          <span>$549</span>
-          <button type="button" data-add="prensa" data-name="Prensa francesa" data-price="549" data-hue="200"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-          <article class="t-card" style="--h:160">
-        <div class="t-img"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></div>
-        <b>Taza de cerámica</b>
-        <div class="t-row">
-          <span>$219</span>
-          <button type="button" data-add="taza" data-name="Taza de cerámica" data-price="219" data-hue="160"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-          <article class="t-card" style="--h:40">
-        <div class="t-img"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></div>
-        <b>Galletas de avena</b>
-        <div class="t-row">
-          <span>$95</span>
-          <button type="button" data-add="galletas" data-name="Galletas de avena" data-price="95" data-hue="40"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
-        </div>
-      </article>
-      </section>
+  <section class="t-perks">
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3.2v3.3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><b>Envío gratis</b> desde $599</span>
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg><b>Tostado semanal</b> para máxima frescura</span>
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 4.5 5.8v5.7c0 4.7 3.2 8.4 7.5 9.7 4.3-1.3 7.5-5 7.5-9.7V5.8Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg><b>Pago seguro</b> tarjeta, OXXO y SPEI</span>
+  </section>
+
+  <section class="t-shop">
+    <div class="t-shop-head">
+      <h4>Tienda</h4>
+      <div class="t-filters" data-t-filters>
+        <button type="button" class="is-on" data-f="todo">Todo</button>
+        <button type="button" data-f="cafe">Café</button>
+        <button type="button" data-f="metodos">Métodos</button>
+        <button type="button" data-f="accesorios">Accesorios</button>
+      </div>
+    </div>
+    <div class="t-grid">
+              <article class="t-card" data-cat="cafe">
+          <div class="t-img" style="--bag:#7a4a2a">
+            <em>Más vendido</em>            <span class="t-bag"><i>tostado.</i><em>Chiapas</em></span>          </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.9 <small>(214)</small></span>
+            <b>Café Chiapas</b>
+            <small>Grano · 500 g</small>
+            <div class="t-row">
+              <span>$289</span>
+              <button type="button" data-add="chiapas" data-name="Café Chiapas" data-price="289" data-color="#7a4a2a"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="cafe">
+          <div class="t-img" style="--bag:#2f5d50">
+                        <span class="t-bag"><i>tostado.</i><em>Veracruz</em></span>          </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.8 <small>(132)</small></span>
+            <b>Café Veracruz</b>
+            <small>Grano · 500 g</small>
+            <div class="t-row">
+              <span>$269</span>
+              <button type="button" data-add="veracruz" data-name="Café Veracruz" data-price="269" data-color="#2f5d50"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="cafe">
+          <div class="t-img" style="--bag:#a6453a">
+            <em>Nuevo</em>            <span class="t-bag"><i>tostado.</i><em>Oaxaca</em></span>          </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.9 <small>(88)</small></span>
+            <b>Café Oaxaca</b>
+            <small>Molido · 250 g</small>
+            <div class="t-row">
+              <span>$189</span>
+              <button type="button" data-add="oaxaca" data-name="Café Oaxaca" data-price="189" data-color="#a6453a"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="cafe">
+          <div class="t-img" style="--bag:#3e4a6b">
+                        <span class="t-bag"><i>tostado.</i><em>Descafeinado</em></span>          </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.7 <small>(41)</small></span>
+            <b>Descafeinado</b>
+            <small>Grano · 500 g</small>
+            <div class="t-row">
+              <span>$299</span>
+              <button type="button" data-add="descafe" data-name="Descafeinado" data-price="299" data-color="#3e4a6b"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="metodos">
+          <div class="t-img" style="--bag:#e3ebf3">
+                        <span class="t-obj"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span>
+                      </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.8 <small>(76)</small></span>
+            <b>Prensa francesa</b>
+            <small>Vidrio · 600 ml</small>
+            <div class="t-row">
+              <span>$549</span>
+              <button type="button" data-add="prensa" data-name="Prensa francesa" data-price="549" data-color="#e3ebf3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="metodos">
+          <div class="t-img" style="--bag:#f1e3d3">
+                        <span class="t-obj"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span>
+                      </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.9 <small>(64)</small></span>
+            <b>Gotero V60</b>
+            <small>Cerámica</small>
+            <div class="t-row">
+              <span>$459</span>
+              <button type="button" data-add="v60" data-name="Gotero V60" data-price="459" data-color="#f1e3d3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="accesorios">
+          <div class="t-img" style="--bag:#f3e6df">
+                        <span class="t-obj"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span>
+                      </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.8 <small>(120)</small></span>
+            <b>Taza de cerámica</b>
+            <small>350 ml</small>
+            <div class="t-row">
+              <span>$219</span>
+              <button type="button" data-add="taza" data-name="Taza de cerámica" data-price="219" data-color="#f3e6df"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+              <article class="t-card" data-cat="accesorios">
+          <div class="t-img" style="--bag:#efe4cf">
+                        <span class="t-obj"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span>
+                      </div>
+          <div class="t-card-body">
+            <span class="t-rate">★ 4.6 <small>(53)</small></span>
+            <b>Galletas de avena</b>
+            <small>Caja · 12 pzas</small>
+            <div class="t-row">
+              <span>$95</span>
+              <button type="button" data-add="galletas" data-name="Galletas de avena" data-price="95" data-color="#efe4cf"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i>Agregar</i></button>
+            </div>
+          </div>
+        </article>
+          </div>
+  </section>
 
   <div class="t-scrim" data-cart-close></div>
   <aside class="t-drawer" aria-label="Carrito">
     <div class="t-drawer-head"><b>Tu carrito</b><button type="button" data-cart-close aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="t-ship"><span data-ship-txt>Agrega $599 para obtener envío gratis</span><i><b data-ship-bar></b></i></div>
     <div class="t-lines" data-cart-lines><p class="t-empty">Tu carrito está vacío.</p></div>
     <div class="t-drawer-foot">
+      <div class="t-sum"><span>Subtotal</span><span data-cart-sub>$0.00</span></div>
+      <div class="t-sum"><span>Envío</span><span data-cart-envio>—</span></div>
       <div class="t-total"><span>Total</span><b data-cart-total>$0.00</b></div>
-      <button type="button" class="t-pay" data-cart-pay disabled>Pagar con tarjeta u OXXO</button>
+      <button type="button" class="t-pay" data-cart-pay disabled>Pagar con tarjeta, OXXO o SPEI</button>
     </div>
     <div class="t-done" data-cart-done>
       <span class="t-done-ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
       <b>¡Pedido confirmado!</b>
-      <p>Te enviamos la confirmación y el número de guía por correo.</p>
+      <p>Pedido <strong data-cart-order>#TS-10482</strong>. Te enviamos la confirmación por correo.</p>
+      <ol class="t-steps"><li class="is-on">Confirmado</li><li>Preparando</li><li>Enviado</li></ol>
       <button type="button" data-cart-reset>Seguir comprando</button>
     </div>
   </aside>
 </div>
     </div></div>
-                          <div class="lab-app scaled" data-show="pos" data-url="punto.app/caja"><div class="app-wrap"><div class="app app-pos" data-app="pos">
-  <header class="p-top">
-    <b class="p-logo"><span>P</span>Punto</b>
-    <span class="p-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg>Caja 1 · Ana</span>
-    <span class="p-chip p-time" data-pos-clock>12:41</span>
-  </header>
+                          <div class="lab-app scaled" data-lenis-prevent data-show="pos" data-url="punto.app/caja"><div class="app-wrap"><div class="app app-pos" data-app="pos">
+  <aside class="p-rail">
+    <span class="p-logo">P</span>
+    <span class="is-on"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19M6 15h4"/></svg></span>
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5Z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg></span>
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+    <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.9-3.4 3.3-5.2 6.5-5.2s5.6 1.8 6.5 5.2M16 4.8a3.5 3.5 0 0 1 0 6.4M18.5 15.2c1.4.8 2.4 2.4 3 4.8"/></svg></span>
+    <span class="p-rail-end"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span>
+  </aside>
 
-  <div class="p-body">
-    <section class="p-catalog">
-      <div class="p-cats">
-        <button type="button" class="is-on" data-pos-cat="todo">Todo</button>
-        <button type="button" data-pos-cat="bebidas">Bebidas</button>
-        <button type="button" data-pos-cat="comida">Comida</button>
-        <button type="button" data-pos-cat="postres">Postres</button>
-      </div>
-      <div class="p-tiles">
-                  <button type="button" class="p-tile" style="--h:28" data-cat="bebidas" data-name="Americano" data-price="45">
-            <span class="p-tile-dot"></span><b>Americano</b><small>$45</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:22" data-cat="bebidas" data-name="Capuchino" data-price="58">
-            <span class="p-tile-dot"></span><b>Capuchino</b><small>$58</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:34" data-cat="bebidas" data-name="Latte" data-price="62">
-            <span class="p-tile-dot"></span><b>Latte</b><small>$62</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:12" data-cat="bebidas" data-name="Té chai" data-price="55">
-            <span class="p-tile-dot"></span><b>Té chai</b><small>$55</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:200" data-cat="bebidas" data-name="Frappé" data-price="72">
-            <span class="p-tile-dot"></span><b>Frappé</b><small>$72</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:40" data-cat="comida" data-name="Croissant" data-price="48">
-            <span class="p-tile-dot"></span><b>Croissant</b><small>$48</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:46" data-cat="comida" data-name="Bagel" data-price="65">
-            <span class="p-tile-dot"></span><b>Bagel</b><small>$65</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:90" data-cat="comida" data-name="Sándwich" data-price="89">
-            <span class="p-tile-dot"></span><b>Sándwich</b><small>$89</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:15" data-cat="postres" data-name="Brownie" data-price="42">
-            <span class="p-tile-dot"></span><b>Brownie</b><small>$42</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:340" data-cat="postres" data-name="Cheesecake" data-price="68">
-            <span class="p-tile-dot"></span><b>Cheesecake</b><small>$68</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:32" data-cat="postres" data-name="Galleta" data-price="25">
-            <span class="p-tile-dot"></span><b>Galleta</b><small>$25</small>
-          </button>
-                  <button type="button" class="p-tile" style="--h:120" data-cat="bebidas" data-name="Jugo verde" data-price="49">
-            <span class="p-tile-dot"></span><b>Jugo verde</b><small>$49</small>
-          </button>
-              </div>
-    </section>
+  <div class="p-main">
+    <header class="p-top">
+      <div class="p-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="text" placeholder="Buscar producto…" data-pos-search aria-label="Buscar producto"></div>
+      <span class="p-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg>Cliente: Mostrador</span>
+      <span class="p-chip">Caja 1 · Ana</span>
+      <span class="p-chip p-time" data-pos-clock>12:41</span>
+    </header>
 
-    <aside class="p-ticket">
-      <div class="p-ticket-head"><b>Orden <span data-pos-folio>#0483</span></b><button type="button" data-pos-clear><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l1 13h9l1-13M9.5 7V4h5v3"/></svg></button></div>
-      <div class="p-lines" data-pos-lines><p class="p-empty"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Toca un producto para agregarlo</p></div>
-      <div class="p-sums">
-        <div><span>Subtotal</span><span data-pos-sub>$0.00</span></div>
-        <div><span>IVA incluido</span><span data-pos-iva>$0.00</span></div>
-        <div class="p-sum-total"><span>Total</span><b data-pos-total>$0.00</b></div>
-      </div>
-      <button type="button" class="p-charge" data-pos-charge disabled>Cobrar <span data-pos-charge-amt>$0.00</span></button>
-    </aside>
+    <div class="p-kpis">
+      <div><small>Ventas de hoy</small><b data-pos-kpi-ventas>$3,480.00</b></div>
+      <div><small>Tickets</small><b data-pos-kpi-tickets>42</b></div>
+      <div><small>Ticket promedio</small><b data-pos-kpi-prom>$82.86</b></div>
+      <div><small>Efectivo en caja</small><b data-pos-kpi-caja>$1,950.00</b></div>
+    </div>
+
+    <div class="p-body">
+      <section class="p-catalog">
+        <div class="p-cats">
+          <button type="button" class="is-on" data-pos-cat="todo">Todo</button>
+          <button type="button" data-pos-cat="bebidas">Bebidas</button>
+          <button type="button" data-pos-cat="comida">Comida</button>
+          <button type="button" data-pos-cat="postres">Postres</button>
+        </div>
+        <div class="p-tiles">
+                      <button type="button" class="p-tile" style="--h:28" data-cat="bebidas" data-name="Americano" data-price="45">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span><b>Americano</b><small>$45</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:22" data-cat="bebidas" data-name="Capuchino" data-price="58">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span><b>Capuchino</b><small>$58</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:34" data-cat="bebidas" data-name="Latte" data-price="62">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span><b>Latte</b><small>$62</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:12" data-cat="bebidas" data-name="Té chai" data-price="55">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg></span><b>Té chai</b><small>$55</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:200" data-cat="bebidas" data-name="Frappé" data-price="72">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5Z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg></span><b>Frappé</b><small>$72</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:120" data-cat="bebidas" data-name="Jugo verde" data-price="49">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19 13 11"/></svg></span><b>Jugo verde</b><small>$49</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:40" data-cat="comida" data-name="Croissant" data-price="48">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span><b>Croissant</b><small>$48</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:46" data-cat="comida" data-name="Bagel" data-price="65">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span><b>Bagel</b><small>$65</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:90" data-cat="comida" data-name="Sándwich" data-price="89">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5Z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg></span><b>Sándwich</b><small>$89</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:15" data-cat="postres" data-name="Brownie" data-price="42">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span><b>Brownie</b><small>$42</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:340" data-cat="postres" data-name="Cheesecake" data-price="68">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span><b>Cheesecake</b><small>$68</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                      <button type="button" class="p-tile" style="--h:32" data-cat="postres" data-name="Galleta" data-price="25">
+              <span class="p-tile-art"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a3 3 0 0 0 4 4 3 3 0 0 0 5 5Z"/><path d="M8.5 9.5h.01M12 14h.01M8.5 15.5h.01"/></svg></span><b>Galleta</b><small>$25</small><i class="p-tile-qty" data-qty></i>
+            </button>
+                  </div>
+      </section>
+
+      <aside class="p-ticket">
+        <div class="p-ticket-head"><b>Orden <span data-pos-folio>#0483</span></b><button type="button" data-pos-clear aria-label="Vaciar orden"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l1 13h9l1-13M9.5 7V4h5v3"/></svg></button></div>
+        <div class="p-lines" data-pos-lines><p class="p-empty"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>Toca un producto para agregarlo</p></div>
+        <button type="button" class="p-discount" data-pos-discount><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12.2V4h8.2l9.3 9.3-8.2 8.2Z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg>Aplicar descuento 10%</button>
+        <div class="p-sums">
+          <div><span>Subtotal</span><span data-pos-sub>$0.00</span></div>
+          <div class="p-sum-desc"><span>Descuento</span><span data-pos-desc>−$0.00</span></div>
+          <div><span>IVA incluido</span><span data-pos-iva>$0.00</span></div>
+          <div class="p-sum-total"><span>Total</span><b data-pos-total>$0.00</b></div>
+        </div>
+        <button type="button" class="p-charge" data-pos-charge disabled>Cobrar <span data-pos-charge-amt>$0.00</span></button>
+      </aside>
+    </div>
   </div>
 
   <div class="p-modal" data-pos-modal>
@@ -597,44 +728,62 @@
           <div class="p-cash-btns"><button type="button" data-cash="exacto">Exacto</button><button type="button" data-cash="100">$100</button><button type="button" data-cash="200">$200</button><button type="button" data-cash="500">$500</button></div>
           <div class="p-change"><span>Cambio</span><b data-pos-change>$0.00</b></div>
         </div>
+        <div class="p-card-wait" data-pos-card><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19M6 15h4"/></svg><span>Acerca o inserta la tarjeta en la terminal</span></div>
         <div class="p-modal-actions"><button type="button" data-pos-cancel>Cancelar</button><button type="button" class="p-confirm" data-pos-confirm>Registrar venta</button></div>
       </div>
       <div class="p-modal-step" data-step="ok">
         <span class="p-ok-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
         <b>Venta registrada</b>
         <p>Ticket <span data-pos-ok-folio>#0483</span> · <span data-pos-ok-total>$0.00</span></p>
-        <button type="button" class="p-confirm" data-pos-new>Nueva venta</button>
+        <div class="p-receipt" data-pos-receipt></div>
+        <div class="p-modal-actions"><button type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg> Imprimir</button><button type="button" class="p-confirm" data-pos-new>Nueva venta</button></div>
       </div>
     </div>
   </div>
 </div>
     </div></div>
-                          <div class="lab-app scaled" data-show="citas" data-url="barberiaclasica.mx/citas"><div class="app-wrap"><div class="app app-citas" data-app="citas">
+                          <div class="lab-app scaled" data-lenis-prevent data-show="citas" data-url="barberiaclasica.mx/citas"><div class="app-wrap"><div class="app app-citas" data-app="citas">
   <header class="c-head">
     <span class="c-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="7" r="2.5"/><circle cx="6.5" cy="17" r="2.5"/><path d="M8.5 8.5 20 18M8.5 15.5 20 6"/></svg></span>
     <div><b>Barbería Clásica</b><small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.3"/></svg> Centro · ★ 4.9 (312 reseñas)</small></div>
-    <span class="c-steps"><i class="is-on"></i><i></i><i></i></span>
+    <ol class="c-steps"><li class="is-on">Servicio</li><li>Barbero</li><li>Fecha</li><li>Hora</li></ol>
   </header>
 
   <div class="c-body">
     <section class="c-col">
       <h5><em>1</em>Elige tu servicio</h5>
               <button type="button" class="c-svc" data-svc="corte" data-name="Corte clásico" data-price="250" data-min="45">
+          <span class="c-svc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="7" r="2.5"/><circle cx="6.5" cy="17" r="2.5"/><path d="M8.5 8.5 20 18M8.5 15.5 20 6"/></svg></span>
           <span><b>Corte clásico</b><small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> 45 min</small></span><strong>$250</strong>
         </button>
               <button type="button" class="c-svc" data-svc="barba" data-name="Arreglo de barba" data-price="180" data-min="30">
+          <span class="c-svc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></span>
           <span><b>Arreglo de barba</b><small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> 30 min</small></span><strong>$180</strong>
         </button>
               <button type="button" class="c-svc" data-svc="combo" data-name="Corte + barba" data-price="380" data-min="75">
+          <span class="c-svc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8Z"/></svg></span>
           <span><b>Corte + barba</b><small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> 75 min</small></span><strong>$380</strong>
         </button>
               <button type="button" class="c-svc" data-svc="afeitado" data-name="Afeitado tradicional" data-price="220" data-min="40">
+          <span class="c-svc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 13.6 9 19 10.5l-5.4 1.6L12 17.5l-1.6-5.4L5 10.5 10.4 9Z"/><path d="M19 3v4M17 5h4M5 17v4M3 19h4"/></svg></span>
           <span><b>Afeitado tradicional</b><small><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> 40 min</small></span><strong>$220</strong>
         </button>
           </section>
 
     <section class="c-col">
-      <h5><em>2</em>Elige el día</h5>
+      <h5><em>2</em>Elige a tu barbero</h5>
+      <div class="c-barbers">
+                  <button type="button" class="c-barber" data-barber="luis" data-name="Luis" data-color="#c9a36a" style="--c:#c9a36a">
+            <span class="c-av">L</span><b>Luis</b><small>★ 4.9</small>
+          </button>
+                  <button type="button" class="c-barber" data-barber="diego" data-name="Diego" data-color="#8a9bbf" style="--c:#8a9bbf">
+            <span class="c-av">D</span><b>Diego</b><small>★ 4.8</small>
+          </button>
+                  <button type="button" class="c-barber" data-barber="marco" data-name="Marco" data-color="#b07f6a" style="--c:#b07f6a">
+            <span class="c-av">M</span><b>Marco</b><small>★ 5.0</small>
+          </button>
+              </div>
+      <h5 class="c-h5-gap"><em>3</em>Elige el día</h5>
       <div class="c-cal">
         <div class="c-cal-head"><b>Noviembre 2026</b><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span></div>
         <div class="c-cal-grid">
@@ -673,20 +822,15 @@
     </section>
 
     <section class="c-col">
-      <h5><em>3</em>Elige la hora</h5>
+      <h5><em>4</em>Elige la hora</h5>
+      <span class="c-slot-group">Mañana</span>
       <div class="c-slots">
-                  <button type="button" class="c-slot" data-slot="10:00">10:00</button>
-                  <button type="button" class="c-slot" data-slot="10:45">10:45</button>
-                  <button type="button" class="c-slot" data-slot="11:30" disabled>11:30</button>
-                  <button type="button" class="c-slot" data-slot="12:15">12:15</button>
-                  <button type="button" class="c-slot" data-slot="13:00" disabled>13:00</button>
-                  <button type="button" class="c-slot" data-slot="16:00">16:00</button>
-                  <button type="button" class="c-slot" data-slot="16:45">16:45</button>
-                  <button type="button" class="c-slot" data-slot="17:30" disabled>17:30</button>
-                  <button type="button" class="c-slot" data-slot="18:15">18:15</button>
-              </div>
+        <button type="button" class="c-slot" data-slot="10:00">10:00</button><button type="button" class="c-slot" data-slot="10:45">10:45</button><button type="button" class="c-slot" data-slot="11:30" disabled>11:30</button><button type="button" class="c-slot" data-slot="12:15">12:15</button>      </div>
+      <span class="c-slot-group">Tarde</span>
+      <div class="c-slots">
+        <button type="button" class="c-slot" data-slot="16:00">16:00</button><button type="button" class="c-slot" data-slot="16:45">16:45</button><button type="button" class="c-slot" data-slot="17:30" disabled>17:30</button><button type="button" class="c-slot" data-slot="18:15">18:15</button><button type="button" class="c-slot" data-slot="19:00">19:00</button>      </div>
       <div class="c-summary">
-        <div><span>Servicio</span><b data-c-svc>—</b></div>
+        <div class="c-summary-who"><span class="c-av" data-c-av>?</span><span><b data-c-svc>Tu cita</b><small data-c-barber>Elige servicio y barbero</small></span></div>
         <div><span>Fecha</span><b data-c-date>—</b></div>
         <div><span>Total</span><b data-c-total>—</b></div>
         <button type="button" class="c-confirm" data-c-confirm disabled>Confirmar cita</button>
@@ -694,18 +838,18 @@
     </section>
   </div>
 
-  <div class="c-done" data-c-done>
+  <div class="c-done app-overlay" data-c-done>
     <div class="c-done-card">
       <span class="c-done-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
       <b>¡Tu cita está confirmada!</b>
       <p data-c-done-text></p>
       <span class="c-wa"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg> Te recordaremos un día antes por WhatsApp</span>
-      <button type="button" data-c-reset>Agendar otra cita</button>
+      <div class="c-done-actions"><button type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg> Agregar a mi calendario</button><button type="button" data-c-reset>Agendar otra cita</button></div>
     </div>
   </div>
 </div>
     </div></div>
-                          <div class="lab-app scaled" data-show="facturacion" data-url="tunegocio.mx/facturas"><div class="app-wrap"><div class="app app-fact" data-app="facturacion">
+                          <div class="lab-app scaled" data-lenis-prevent data-show="facturacion" data-url="tunegocio.mx/facturas"><div class="app-wrap"><div class="app app-fact" data-app="facturacion">
   <header class="f-top">
     <b class="f-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8Z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/></svg>Factura</b>
     <span class="f-crumb">Facturas / <b>Nueva</b></span>
@@ -713,6 +857,17 @@
   </header>
 
   <div class="f-body">
+    <aside class="f-side">
+      <div class="f-kpi"><small>Facturado en octubre</small><b>$184,320.00</b><span>+12% vs. septiembre</span></div>
+      <small class="f-side-title">Recientes</small>
+      <ul class="f-recent" data-f-recent>
+                  <li><span><b>A-0126</b><small>Clínica Dental Sonríe</small></span><span><b>$8,120</b><em class="is-ok">Timbrada</em></span></li>
+                  <li><span><b>A-0125</b><small>Público en general</small></span><span><b>$1,450</b><em class="is-ok">Timbrada</em></span></li>
+                  <li><span><b>A-0124</b><small>Taller Núñez</small></span><span><b>$3,990</b><em class="is-cancel">Cancelada</em></span></li>
+                  <li><span><b>A-0123</b><small>Comercializadora del Norte</small></span><span><b>$22,040</b><em class="is-ok">Timbrada</em></span></li>
+              </ul>
+    </aside>
+
     <section class="f-form">
       <h5>Receptor</h5>
       <div class="f-clients">
@@ -764,7 +919,7 @@
   </div>
 </div>
     </div></div>
-                          <div class="lab-app scaled" data-show="procesos" data-url="tunegocio.mx/compras"><div class="app-wrap"><div class="app app-proc" data-app="procesos" data-modo="despues">
+                          <div class="lab-app scaled" data-lenis-prevent data-show="procesos" data-url="tunegocio.mx/compras"><div class="app-wrap"><div class="app app-proc" data-app="procesos" data-modo="despues">
   <header class="k-top">
     <b class="k-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3.5" width="7" height="6" rx="1.5"/><rect x="14" y="14.5" width="7" height="6" rx="1.5"/><path d="M6.5 9.5v3a2 2 0 0 0 2 2H14M17.5 14.5v-5"/><circle cx="17.5" cy="7.5" r="2"/></svg>Compras</b>
     <div class="k-toggle">
@@ -783,65 +938,78 @@
   </div>
 
   <div class="k-despues">
-    <div class="k-board">
-              <div class="k-col" data-col="solicitud">
-          <div class="k-col-head"><span class="k-dot"></span>Solicitud<small data-count>0</small></div>
-          <div class="k-cards">
-                          <article class="k-card" data-id="130">
-                <small>#130</small>
-                <b>Uniformes del personal</b>
-                <div class="k-card-foot"><span class="k-av">C</span><span>$9,600</span>
-                  <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-              </article>
-                          <article class="k-card" data-id="129">
-                <small>#129</small>
-                <b>Mantenimiento de aire</b>
-                <div class="k-card-foot"><span class="k-av">L</span><span>$4,800</span>
-                  <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-              </article>
-                      </div>
-        </div>
-              <div class="k-col" data-col="revision">
-          <div class="k-col-head"><span class="k-dot"></span>Revisión<small data-count>0</small></div>
-          <div class="k-cards">
-                          <article class="k-card" data-id="128">
-                <small>#128</small>
-                <b>Papelería de oficina</b>
-                <div class="k-card-foot"><span class="k-av">A</span><span>$1,250</span>
-                  <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-              </article>
-                      </div>
-        </div>
-              <div class="k-col" data-col="aprobada">
-          <div class="k-col-head"><span class="k-dot"></span>Aprobada<small data-count>0</small></div>
-          <div class="k-cards">
-                          <article class="k-card" data-id="127">
-                <small>#127</small>
-                <b>Licencias de software</b>
-                <div class="k-card-foot"><span class="k-av">M</span><span>$3,200</span>
-                  <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-              </article>
-                      </div>
-        </div>
-              <div class="k-col" data-col="pagada">
-          <div class="k-col-head"><span class="k-dot"></span>Pagada<small data-count>0</small></div>
-          <div class="k-cards">
-                          <article class="k-card" data-id="126">
-                <small>#126</small>
-                <b>Insumos de limpieza</b>
-                <div class="k-card-foot"><span class="k-av">S</span><span>$860</span>
-                  <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-              </article>
-                      </div>
-        </div>
+    <div class="k-kpis">
+      <div><small>Abiertas</small><b data-k-kpi="abiertas">3</b></div>
+      <div><small>En revisión</small><b data-k-kpi="revision">1</b></div>
+      <div><small>Pagadas este mes</small><b data-k-kpi="pagadas">12</b></div>
+      <div><small>Aprobación promedio</small><b>1.8 días</b></div>
+    </div>
+    <div class="k-main">
+      <div class="k-board">
+                  <div class="k-col" data-col="solicitud">
+            <div class="k-col-head"><span class="k-dot"></span>Solicitud<small data-count>0</small></div>
+            <div class="k-cards">
+                              <article class="k-card" data-id="130" data-paso="1">
+                  <div class="k-card-top"><small>#130</small><em class="k-prio is-alta">Alta</em></div>
+                  <b>Uniformes del personal</b>
+                  <div class="k-progress"><i></i><i></i><i></i><i></i></div>
+                  <div class="k-card-foot"><span class="k-av">C</span><span>$9,600</span>
+                    <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+                </article>
+                              <article class="k-card" data-id="129" data-paso="1">
+                  <div class="k-card-top"><small>#129</small><em class="k-prio is-media">Media</em></div>
+                  <b>Mantenimiento de aire</b>
+                  <div class="k-progress"><i></i><i></i><i></i><i></i></div>
+                  <div class="k-card-foot"><span class="k-av">L</span><span>$4,800</span>
+                    <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+                </article>
+                          </div>
           </div>
-    <aside class="k-log">
-      <b>Actividad</b>
-      <ul data-k-log>
-        <li><span>09:12</span>Marco aprobó la solicitud #127</li>
-        <li><span>08:47</span>Sofía registró el pago de #126</li>
-      </ul>
-    </aside>
+                  <div class="k-col" data-col="revision">
+            <div class="k-col-head"><span class="k-dot"></span>Revisión<small data-count>0</small></div>
+            <div class="k-cards">
+                              <article class="k-card" data-id="128" data-paso="2">
+                  <div class="k-card-top"><small>#128</small><em class="k-prio is-baja">Baja</em></div>
+                  <b>Papelería de oficina</b>
+                  <div class="k-progress"><i></i><i></i><i></i><i></i></div>
+                  <div class="k-card-foot"><span class="k-av">A</span><span>$1,250</span>
+                    <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+                </article>
+                          </div>
+          </div>
+                  <div class="k-col" data-col="aprobada">
+            <div class="k-col-head"><span class="k-dot"></span>Aprobada<small data-count>0</small></div>
+            <div class="k-cards">
+                              <article class="k-card" data-id="127" data-paso="3">
+                  <div class="k-card-top"><small>#127</small><em class="k-prio is-media">Media</em></div>
+                  <b>Licencias de software</b>
+                  <div class="k-progress"><i></i><i></i><i></i><i></i></div>
+                  <div class="k-card-foot"><span class="k-av">M</span><span>$3,200</span>
+                    <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+                </article>
+                          </div>
+          </div>
+                  <div class="k-col" data-col="pagada">
+            <div class="k-col-head"><span class="k-dot"></span>Pagada<small data-count>0</small></div>
+            <div class="k-cards">
+                              <article class="k-card" data-id="126" data-paso="4">
+                  <div class="k-card-top"><small>#126</small><em class="k-prio is-baja">Baja</em></div>
+                  <b>Insumos de limpieza</b>
+                  <div class="k-progress"><i></i><i></i><i></i><i></i></div>
+                  <div class="k-card-foot"><span class="k-av">S</span><span>$860</span>
+                    <button type="button" class="k-next" aria-label="Avanzar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+                </article>
+                          </div>
+          </div>
+              </div>
+      <aside class="k-log">
+        <b>Actividad</b>
+        <ul data-k-log>
+          <li><span>09:12</span>Marco aprobó la solicitud #127</li>
+          <li><span>08:47</span>Sofía registró el pago de #126</li>
+        </ul>
+      </aside>
+    </div>
   </div>
 </div>
     </div></div>
@@ -850,6 +1018,7 @@
       </div>
     </div>
     <p class="lab-caption" data-lab-caption></p>
+    </div>
   </div>
 </section>
 <section class="process" id="proceso" data-theme="dark">
@@ -1188,6 +1357,8 @@
   <script>
     window.JPCFG = {"whatsapp":"526311947463","estatico":true};
   </script>
-  <script src="assets/js/main.js?v=1792968018" defer></script>
+  <!-- Desplazamiento suave con inercia (si no carga, la página usa el scroll normal). -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="assets/js/main.js?v=1792969574" defer></script>
 </body>
 </html>
