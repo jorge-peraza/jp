@@ -306,7 +306,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .svc-link:hover svg { transform: translateX(4px); }
 .svc-cta { background: var(--accent); color: #fff; border-color: var(--accent); justify-content: space-between; }
 .svc-cta .label { color: rgba(255,255,255,.7); }
-.svc-cta h3 { font-size: 40px; }
+.svc-cta h3 { font-size: 30px; line-height: 1.1; }
 .svc-cta .btn { background: #fff; color: var(--accent); align-self: flex-start; }
 .hs-bar { height: 2px; margin-top: clamp(16px, 3vh, 36px); background: var(--ln); border-radius: 2px; overflow: hidden; }
 .hs-bar i { display: block; height: 100%; background: var(--fg); transform-origin: 0 50%; transform: scaleX(var(--hp, 0)); }
@@ -316,6 +316,17 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .lab-controls { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
 .lab-controls [data-seg="lab-app"] .seg-pill { background: var(--accent); }
 .lab-controls [data-seg="lab-app"] .seg-btn.is-active { color: #fff; }
+.lbl-sm { display: none; }
+/* En celular las seis demos caben completas: ícono arriba y nombre corto abajo. */
+@media (max-width: 600px) {
+  .lab-controls { width: 100%; }
+  .lab-controls [data-seg="lab-app"] { display: flex; width: 100%; overflow: visible; border-radius: 22px; }
+  .lab-controls [data-seg="lab-app"] .seg-pill { border-radius: 18px; }
+  .lab-controls [data-seg="lab-app"] .seg-btn { flex: 1 1 0; min-width: 0; flex-direction: column; gap: 5px; padding: 10px 2px 9px; border-radius: 18px; font-size: 11px; }
+  .lab-controls [data-seg="lab-app"] .seg-btn svg { width: 18px; height: 18px; }
+  .lab-controls [data-seg="lab-app"] .lbl { display: none; }
+  .lab-controls [data-seg="lab-app"] .lbl-sm { display: block; }
+}
 .lab-stage { display: flex; justify-content: center; }
 .lab-frame {
   position: relative; width: min(100%, 1180px); border-radius: 18px;
@@ -1047,6 +1058,14 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .tile { min-height: 0; }
   .tile-ic { margin-bottom: 14px; }
   .field-row { grid-template-columns: 1fr; }
+  .q-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .q-chip { justify-content: flex-start; gap: 8px; min-height: 52px; padding: 10px 12px; border-radius: 14px; font-size: 13.5px; line-height: 1.25; text-align: left; white-space: normal; }
+  .q-chip svg { flex: none; width: 16px; height: 16px; }
+  .q-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .q-ranges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .q-range { font-size: 13px; padding: 12px 6px; }
+  .q-group legend { font-size: 22px; }
+  .seg-full .seg-btn { flex: 1 1 0; min-width: 0; padding: 10px 6px; font-size: 13px; line-height: 1.2; white-space: normal; text-align: center; }
   .form { padding: 20px; }
   .faq-body p { padding: 0 0 24px 0; }
   .proj-info { padding: 26px 22px 80px; grid-template-columns: 1fr; gap: 6px; }

@@ -353,9 +353,9 @@
     const APPS = {
       web:         ['Página web',              'Cambia de categoría en el menú del restaurante.'],
       tienda:      ['Tienda en línea',         'Agrega productos y abre el carrito para pagar.'],
-      pos:         ['Punto de venta',          'Toca productos, cobra y calcula el cambio.'],
-      citas:       ['Agenda de citas',         'Elige servicio, día y hora, y confirma tu cita.'],
-      facturacion: ['Facturación electrónica', 'Elige cliente, agrega conceptos y timbra la factura.'],
+      pos:         ['Punto de venta',          'Agrega productos, registra el cobro y calcula el cambio.'],
+      citas:       ['Agenda de citas',         'Selecciona servicio, día y hora, y confirma la cita.'],
+      facturacion: ['Facturación electrónica', 'Selecciona un cliente, agrega conceptos y timbra la factura.'],
       procesos:    ['Procesos digitales',      'Avanza solicitudes y compara el antes y el después.'],
     };
     let device = 'pc', app = 'web', morphTimer = null;
@@ -747,12 +747,12 @@
     const setSum = (k, txt) => { const el = sum(k); if (el.textContent !== txt) { el.textContent = txt; replay(el, 'is-pop'); } };
 
     const mensaje = () => [
-      'Hola JP, quiero cotizar un proyecto.',
+      'Hola JP, me gustaría solicitar una cotización.',
       '',
       '• Servicios: ' + ([...st.servicios.values()].join(', ') || 'Por definir'),
-      '• Negocio: ' + (st.giro?.label || 'Por definir'),
+      '• Giro: ' + (st.giro?.label || 'Por definir'),
       '• Presupuesto: ' + (presupuestoTxt() || 'Por definir'),
-      '• Tiempo: ' + st.tiempo,
+      '• Plazo: ' + st.tiempo,
     ].join('\n');
 
     const update = () => {
@@ -915,7 +915,7 @@
           : monto > 0 ? `${opt(form.presupuesto)} (aprox. $${monto.toLocaleString('es-MX')})`
           : opt(form.presupuesto);
         const lineas = [
-          'Hola JP, quiero cotizar un proyecto.',
+          'Hola JP, me gustaría solicitar una cotización.',
           '',
           '• Nombre: ' + form.nombre.value.trim(),
           form.negocio.value.trim() && '• Negocio: ' + form.negocio.value.trim(),
