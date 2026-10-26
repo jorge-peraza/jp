@@ -1087,6 +1087,17 @@
   faqs.forEach(d => d.addEventListener('toggle', () => { if (d.open) faqs.forEach(o => { if (o !== d) o.open = false; }); }));
 
   /* ------------------------------------------------------------------------
+     En celular (sin mouse) las tarjetas se animan solas al pasar por el centro de la pantalla,
+     igual que al pasarles el mouse en computadora.
+     ------------------------------------------------------------------------ */
+  if (!matchMedia('(hover: hover)').matches) {
+    const activar = (el, visible) => el.classList.toggle('is-active', visible);
+    onVisible($$('.ip, .intro-card, .proj'), activar, { rootMargin: '-30% 0px -30% 0px' }, false);
+    // Servicios van en un carrusel horizontal: se anima la tarjeta que queda al centro del carrusel.
+    onVisible($$('.svc'), activar, { root: $('.hs-viewport'), rootMargin: '0px -30% 0px -30%' }, false);
+  }
+
+  /* ------------------------------------------------------------------------
      Cursor, tarjetas con brillo y botones magnéticos
      ------------------------------------------------------------------------ */
   if (finePointer && !reduce) {
